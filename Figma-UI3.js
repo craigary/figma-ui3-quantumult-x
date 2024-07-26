@@ -16,6 +16,7 @@ if (
 
   $task.fetch({ url }).then(
     response => {
+      console.log(response.statusCode, response.headers)
       // response.statusCode, response.headers, response.body
       let body = response.body
 
