@@ -12,20 +12,32 @@ if (
 ) {
   console.log('Figma: URL matches pattern 🎊')
 
-  // Get the response body
-  let body = $response.body
+  const url = $request.url
 
-  // Perform string replacements to modify the content
-  body = body.replace(/e\?"ui3":"ui2"/g, '"ui3"')
-  body = body.replace(/c\(e\)?"ui3":"ui2"/g, '"ui3"')
-  body = body.replace(/version:"ui2",/g, 'version:"ui3",')
-  body = body.replace(/initialVersion:a="ui2"}\)/g, 'initialVersion:a="ui3"})')
-  body = body.replace(/"ui2"===o.version/g, 'false')
+  $task.fetch({ url }).then(
+    response => {
+      // response.statusCode, response.headers, response.body
+      let body = response.body
+      body = body.replace(/e\?"ui3":"ui2"/g, '"ui3"')
+      body = body.replace(/c\(e\)?"ui3":"ui2"/g, '"ui3"')
+      body = body.replace(/version:"ui2",/g, 'version:"ui3",')
+      body = body.replace(
+        /initialVersion:a="ui2"}\)/g,
+        'initialVersion:a="ui3"})'
+      )
+      body = body.replace(/"ui2"===o.version/g, 'false')
 
-  console.log('Content modified')
+      console.log('Content modified')
 
-  // Return the modified body
-  $done({ body: body })
+      // Return the modified body
+      $done({ body: body })
+    },
+    reason => {
+      // reason.error
+      $notify('Title', 'Subtitle', reason.error) // Error!
+      $done({})
+    }
+  )
 } else {
   console.log('URL does not match pattern')
   // If the URL does not match, return the original response body
