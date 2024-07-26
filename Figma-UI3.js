@@ -18,6 +18,7 @@ if (
     response => {
       // response.statusCode, response.headers, response.body
       let body = response.body
+
       body = body.replace(/e\?"ui3":"ui2"/g, '"ui3"')
       body = body.replace(/c\(e\)?"ui3":"ui2"/g, '"ui3"')
       body = body.replace(/version:"ui2",/g, 'version:"ui3",')
@@ -30,7 +31,10 @@ if (
       console.log('Content modified')
 
       // Return the modified body
-      $done({ body: body })
+      $done({
+        status: response.statusCode,
+        body: body
+      })
     },
     reason => {
       // reason.error
